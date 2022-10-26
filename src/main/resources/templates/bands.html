@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+</head>
+<body>
+
+<table>
+    <tr th:each="band: ${bands}">
+        <td th:text="${band.id}"></td>
+        <td> <a th:text="${band.bandName}" th:href="@{'/albums?band_id=' + ${band.id}}"></a></td>
+        <td th:text="${band.country}"></td>
+    </tr>
+</table>
+</body>
+</html>

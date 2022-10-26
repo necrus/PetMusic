@@ -13,10 +13,10 @@ public class BandGenrePK implements Serializable {
     @Column(name = "band_id", nullable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long bandId;
+    private Long bandId;
     @Column(name = "genre_id", nullable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long genreId;
+    private Long genreId;
 
 }
