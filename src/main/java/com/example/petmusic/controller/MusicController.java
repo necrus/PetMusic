@@ -9,8 +9,7 @@ import com.example.petmusic.repository.TrackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,11 +66,48 @@ public class MusicController {
         List<Track> tracks;
         if (album_id.isPresent()) {
             tracks = trackRepository.findByAlbumId(album_id.get());
+            Optional<Album> album = albumRepository.findById(album_id.get());
+            model.addAttribute("album_name", album.get().getAlbumName());
         } else {
             tracks = trackRepository.findAll();
         }
         model.addAttribute("tracks", tracks);
         return "tracks";
+    }
+
+    @GetMapping("/addband")
+    public String addBandForm(Band band) {
+        return "addbandform";
+    }
+
+    @PostMapping("/addband")
+    public String addBand(Band band) {
+        bandRepository.save(band);
+        return "redirect:bands";
+    }
+
+    @GetMapping("/addalbum")
+    public String addAlbumForm(Album album, Model model) {
+        model.addAttribute("bands", bandRepository.findAll());
+        return "addalbumform";
+    }
+
+    @PostMapping("/addalbum")
+    public String addAlbum(Album album) {
+        albumRepository.save(album);
+        return "redirect:albums";
+    }
+
+    @GetMapping("/addtrack")
+    public String addTrackForm(Track track, Model model) {
+        model.addAttribute("albums", albumRepository.findAll());
+        return "addtrackform";
+    }
+
+    @PostMapping("/addtrack")
+    public String addTrack(Track track) {
+        trackRepository.save(track);
+        return "redirect:tracks";
     }
 
 }

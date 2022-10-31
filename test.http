@@ -1,0 +1,10 @@
+### addBand
+POST http://localhost:8080/addband
+Content-Type: application/x-www-form-urlencoded
+
+bandName=test&country=test
+
+
+### get
+GET http://localhost:8080/bands
+

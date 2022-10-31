@@ -5,7 +5,7 @@
     <title>Index</title>
 </head>
 <body>
-
+<a th:href="@{/addalbum}">Добавить альбом</a>
 <table>
     <tr th:each="album: ${albums}">
         <td th:text="${album.id}"></td>

@@ -29,9 +29,13 @@ public class WebSecurityConfig {
         http
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/bands").hasAnyRole("USER", "ADMIN")
+
+//                .antMatchers("/bands").hasAnyRole("USER", "ADMIN")
 //                .antMatchers("/crypt/**").hasAuthority("READ_PROFILE")
-                .anyRequest().authenticated();
+//                .anyRequest().authenticated();
+                .anyRequest().permitAll()
+                .and()
+                .csrf().disable();
         http
 //                .httpBasic(); // браузерная форма
                 .formLogin()    // страница авторизации

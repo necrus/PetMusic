@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление группы</title>
+</head>
+<body>
+<h2>Добавление группы</h2>
+<form th:action="@{/addalbum}" method="post" th:object="${album}">
+    <label for="albumName">Название альбома: </label>
+    <input type="text" th:field="*{albumName}" id="albumName">
+    <br/>
+    <label for="year">Год выхода: </label>
+    <input type="text" th:field="*{year}" id="year">
+    <br/>
+    <label for="albumArt">Обложка: </label>
+    <input type="text" th:field="*{albumArt}" id="albumArt">
+    <br/>
+    <label for="band">Группа: </label>
+    <select id="band" th:field="*{bandId}" >
+        <option th:each="band: ${bands}" th:value="${band.id}" th:text="${band.bandName}">bandId</option>
+    </select>
+    <br/>
+    <input type="submit" value="Добавить">
+</form>
+</body>
+</html>

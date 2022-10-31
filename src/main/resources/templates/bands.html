@@ -5,7 +5,7 @@
     <title>Index</title>
 </head>
 <body>
-
+<a th:href="@{/addband}">Добавить группу</a>
 <table>
     <tr th:each="band: ${bands}">
         <td th:text="${band.id}"></td>

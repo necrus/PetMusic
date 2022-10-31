@@ -5,7 +5,8 @@
     <title>Index</title>
 </head>
 <body>
-
+<a th:href="@{/addtrack}">Добавить трек</a>
+<h2 th:if="${album_name} != null">Album: [[${album_name}]]</h2>
 <table>
     <tr th:each="track: ${tracks}">
         <td th:text="${track.id}"></td>

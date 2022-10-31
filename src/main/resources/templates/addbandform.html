@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление группы</title>
+</head>
+<body>
+<h2>Добавление группы</h2>
+<form th:action="@{/addband}" method="post" th:object="${band}">
+    <label for="bandName">Название группы: </label>
+    <input type="text" th:field="*{bandName}" id="bandName">
+    <br/>
+    <label for="country">Страна: </label>
+    <input type="text" th:field="*{country}" id="country">
+    <br/>
+    <input type="submit" value="Добавить">
+</form>
+</body>
+</html>
