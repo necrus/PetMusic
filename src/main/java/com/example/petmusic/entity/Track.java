@@ -12,6 +12,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class Track {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
