@@ -2,10 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Добавление группы</title>
+    <title>Добавление трека</title>
 </head>
 <body>
-<h2>Добавление группы</h2>
+<h2>Добавление трека</h2>
 <form th:action="@{/addtrack}" method="post" th:object="${track}">
     <label for="trackName">Название трека: </label>
     <input type="text" th:field="*{trackName}" id="trackName">

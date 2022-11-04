@@ -30,7 +30,7 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
 
-//                .antMatchers("/bands").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/bands", "/albums", "/tracks").hasAnyRole("USER", "ADMIN")
 //                .antMatchers("/crypt/**").hasAuthority("READ_PROFILE")
 //                .anyRequest().authenticated();
                 .anyRequest().permitAll()

@@ -2,10 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Добавление группы</title>
+    <title>Добавление альбома</title>
 </head>
 <body>
-<h2>Добавление группы</h2>
+<h2>Добавление альбома</h2>
 <form th:action="@{/addalbum}" method="post" th:object="${album}">
     <label for="albumName">Название альбома: </label>
     <input type="text" th:field="*{albumName}" id="albumName">
