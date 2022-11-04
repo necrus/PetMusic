@@ -76,36 +76,42 @@ public class MusicController {
     }
 
     @GetMapping("/addband")
-    public String addBandForm(Band band) {
+    public String addBandForm(Model model) {
+        Band band = new Band();
+        model.addAttribute("band", band);
         return "addbandform";
     }
 
     @PostMapping("/addband")
-    public String addBand(Band band) {
+    public String addBand(@ModelAttribute Band band) {
         bandRepository.save(band);
         return "redirect:bands";
     }
 
     @GetMapping("/addalbum")
-    public String addAlbumForm(Album album, Model model) {
+    public String addAlbumForm(Model model) {
+        Album album = new Album();
+        model.addAttribute("album", album);
         model.addAttribute("bands", bandRepository.findAll());
         return "addalbumform";
     }
 
     @PostMapping("/addalbum")
-    public String addAlbum(Album album) {
+    public String addAlbum(@ModelAttribute Album album) {
         albumRepository.save(album);
         return "redirect:albums";
     }
 
     @GetMapping("/addtrack")
-    public String addTrackForm(Track track, Model model) {
+    public String addTrackForm(Model model) {
+        Track track = new Track();
+        model.addAttribute("track", track);
         model.addAttribute("albums", albumRepository.findAll());
         return "addtrackform";
     }
 
     @PostMapping("/addtrack")
-    public String addTrack(Track track) {
+    public String addTrack(@ModelAttribute Track track) {
         trackRepository.save(track);
         return "redirect:tracks";
     }

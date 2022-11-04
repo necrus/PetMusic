@@ -1,7 +1,6 @@
 package com.example.petmusic.entity;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.sql.Time;
@@ -31,13 +30,22 @@ public class Track {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         Track track = (Track) o;
-        return id != null && Objects.equals(id, track.id);
+
+        if (!Objects.equals(id, track.id)) return false;
+        if (!Objects.equals(trackName, track.trackName)) return false;
+        if (!Objects.equals(length, track.length)) return false;
+        return Objects.equals(albumId, track.albumId);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (trackName != null ? trackName.hashCode() : 0);
+        result = 31 * result + (length != null ? length.hashCode() : 0);
+        result = 31 * result + (albumId != null ? albumId.hashCode() : 0);
+        return result;
     }
 }
