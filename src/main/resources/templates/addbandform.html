@@ -7,6 +7,9 @@
 <body>
 <h2>Добавление группы</h2>
 <form th:action="@{/addband}" method="post" th:object="${band}">
+    <label for="id"></label>
+    <input hidden type="text" th:field="*{id}" id="id">
+    <br/>
     <label for="bandName">Название группы: </label>
     <input type="text" th:field="*{bandName}" id="bandName">
     <br/>

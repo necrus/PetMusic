@@ -7,6 +7,8 @@
 <body>
 <h2>Добавление альбома</h2>
 <form th:action="@{/addalbum}" method="post" th:object="${album}">
+    <label for="id"></label>
+    <input hidden type="text" th:field="*{id}" id="id">
     <label for="albumName">Название альбома: </label>
     <input type="text" th:field="*{albumName}" id="albumName">
     <br/>

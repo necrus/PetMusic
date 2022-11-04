@@ -67,7 +67,7 @@ public class MusicController {
         if (album_id.isPresent()) {
             tracks = trackRepository.findByAlbumId(album_id.get());
             Optional<Album> album = albumRepository.findById(album_id.get());
-            model.addAttribute("album_name", album.get().getAlbumName());
+            album.ifPresent(value -> model.addAttribute("album_name", value.getAlbumName()));
         } else {
             tracks = trackRepository.findAll();
         }
@@ -77,8 +77,7 @@ public class MusicController {
 
     @GetMapping("/addband")
     public String addBandForm(Model model) {
-        Band band = new Band();
-        model.addAttribute("band", band);
+        model.addAttribute("band", new Band());
         return "addbandform";
     }
 
@@ -90,8 +89,7 @@ public class MusicController {
 
     @GetMapping("/addalbum")
     public String addAlbumForm(Model model) {
-        Album album = new Album();
-        model.addAttribute("album", album);
+        model.addAttribute("album", new Album());
         model.addAttribute("bands", bandRepository.findAll());
         return "addalbumform";
     }
@@ -104,8 +102,7 @@ public class MusicController {
 
     @GetMapping("/addtrack")
     public String addTrackForm(Model model) {
-        Track track = new Track();
-        model.addAttribute("track", track);
+        model.addAttribute("track", new Track());
         model.addAttribute("albums", albumRepository.findAll());
         return "addtrackform";
     }
@@ -119,7 +116,26 @@ public class MusicController {
     //todo: Удаление/изменение треков/альбомов/групп
     //todo: Сделать обложки альбомов
     //todo: Сделать нормальное оформление страниц
-    //todo: Написать тесты
+    //todo: Использовать таблицу genre
 
+    @GetMapping("/edittrack")
+    public String editTrackForm(@RequestParam Long track_id, Model model) {
+        model.addAttribute("track", trackRepository.findById(track_id));
+        model.addAttribute("albums", albumRepository.findAll());
+        return "addtrackform";
+    }
+
+    @GetMapping("/editalbum")
+    public String editAlbumForm(@RequestParam Long album_id, Model model) {
+        model.addAttribute("album", albumRepository.findById(album_id));
+        model.addAttribute("bands", bandRepository.findAll());
+        return "addalbumform";
+    }
+
+    @GetMapping("/editband")
+    public String editBandForm(@RequestParam Long band_id, Model model) {
+        model.addAttribute("band", bandRepository.findById(band_id));
+        return "addbandform";
+    }
 
 }

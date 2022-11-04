@@ -12,6 +12,9 @@
         <td th:text="${track.id}"></td>
         <td th:text="${track.trackName}"></td>
         <td th:text="${track.length}"></td>
+        <td>
+            <a th:href="@{'/edittrack?track_id=' + ${track.id}}">Редактировать</a>
+        </td>
     </tr>
 </table>
 </body>

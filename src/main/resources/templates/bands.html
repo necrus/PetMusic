@@ -9,8 +9,13 @@
 <table>
     <tr th:each="band: ${bands}">
         <td th:text="${band.id}"></td>
-        <td> <a th:text="${band.bandName}" th:href="@{'/albums?band_id=' + ${band.id}}"></a></td>
+        <td>
+            <a th:text="${band.bandName}" th:href="@{'/albums?band_id=' + ${band.id}}"></a>
+        </td>
         <td th:text="${band.country}"></td>
+        <td>
+            <a th:href="@{'/editband?band_id=' + ${band.id}}">Редактировать</a>
+        </td>
     </tr>
 </table>
 </body>

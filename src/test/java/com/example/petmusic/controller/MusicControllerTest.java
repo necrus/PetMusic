@@ -151,9 +151,15 @@ class MusicControllerTest {
 
     @Test
     void addAlbumForm() throws Exception {
+        when(bandRepository.findAll()).thenReturn(Arrays.asList(
+                new Band(1L, "country1", "band1"),
+                new Band(2L, "country2", "band2")
+        ));
+
         mockMvc.perform(get("/addalbum"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Добавление альбома")));
+                .andExpect(content().string(containsString("Добавление альбома")))
+                .andExpect(content().string(containsString("band1")));
     }
 
     @Test
@@ -168,9 +174,15 @@ class MusicControllerTest {
 
     @Test
     void addTrackForm() throws Exception {
+        when(albumRepository.findAll()).thenReturn(Arrays.asList(
+                new Album(1L, "album1", 1991, "", 1L),
+                new Album(2L, "album2", 1992, "", 1L)
+        ));
+
         mockMvc.perform(get("/addtrack"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Добавление трека")));
+                .andExpect(content().string(containsString("Добавление трека")))
+                .andExpect(content().string(containsString("album1")));
     }
 
     @Test
@@ -181,5 +193,48 @@ class MusicControllerTest {
                         .content("trackName=track1&length=01:01:01&albumId=1"))
                 .andExpect(status().is3xxRedirection());
         verify(trackRepository).save(Mockito.eq(track));
+    }
+
+    @Test
+    void editTrackForm() throws Exception {
+        when(trackRepository.findById(1L)).thenReturn(Optional.of(
+                new Track(1L, "track1", Time.valueOf("01:01:01"), 1L)
+        ));
+        when(albumRepository.findAll()).thenReturn(Arrays.asList(
+                new Album(1L, "album1", 1991, "", 1L),
+                new Album(2L, "album2", 1992, "", 1L)
+        ));
+
+        mockMvc.perform(get("/edittrack?track_id=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("track1")))
+                .andExpect(content().string(containsString("album1")));
+    }
+
+    @Test
+    void editAlbumForm() throws Exception {
+        when(albumRepository.findById(1L)).thenReturn(Optional.of(
+                new Album(1L, "album1", 1991, "", 1L)
+        ));
+        when(bandRepository.findAll()).thenReturn(Arrays.asList(
+                new Band(1L, "country1", "band1"),
+                new Band(2L, "country2", "band2")
+        ));
+
+        mockMvc.perform(get("/editalbum?album_id=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("album1")))
+                .andExpect(content().string(containsString("band1")));
+    }
+
+    @Test
+    void editBandForm() throws Exception {
+        when(bandRepository.findById(1L)).thenReturn(Optional.of(
+                new Band(1L, "country1", "band1")
+        ));
+
+        mockMvc.perform(get("/editband?band_id=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("band1")));
     }
 }

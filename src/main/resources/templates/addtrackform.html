@@ -7,6 +7,9 @@
 <body>
 <h2>Добавление трека</h2>
 <form th:action="@{/addtrack}" method="post" th:object="${track}">
+    <label for="id"></label>
+    <input hidden type="text" th:field="*{id}" id="id">
+    <br/>
     <label for="trackName">Название трека: </label>
     <input type="text" th:field="*{trackName}" id="trackName">
     <br/>
