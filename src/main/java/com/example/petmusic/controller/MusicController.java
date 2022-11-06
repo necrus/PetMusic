@@ -84,7 +84,7 @@ public class MusicController {
     @PostMapping("/addband")
     public String addBand(@ModelAttribute Band band) {
         bandRepository.save(band);
-        return "redirect:bands";
+        return "redirect:/bands";
     }
 
     @GetMapping("/addalbum")
@@ -97,7 +97,7 @@ public class MusicController {
     @PostMapping("/addalbum")
     public String addAlbum(@ModelAttribute Album album) {
         albumRepository.save(album);
-        return "redirect:albums";
+        return "redirect:/albums";
     }
 
     @GetMapping("/addtrack")
@@ -110,13 +110,12 @@ public class MusicController {
     @PostMapping("/addtrack")
     public String addTrack(@ModelAttribute Track track) {
         trackRepository.save(track);
-        return "redirect:tracks";
+        return "redirect:/tracks";
     }
 
-    //todo: Удаление/изменение треков/альбомов/групп
-    //todo: Сделать обложки альбомов
-    //todo: Сделать нормальное оформление страниц
-    //todo: Использовать таблицу genre
+    //todo Сделать обложки альбомов
+    //todo Сделать нормальное оформление страниц
+    //todo Использовать таблицы genre, artist
 
     @GetMapping("/edittrack")
     public String editTrackForm(@RequestParam Long track_id, Model model) {
@@ -138,4 +137,21 @@ public class MusicController {
         return "addbandform";
     }
 
+    @GetMapping("/deletetrack")
+    public String deleteTrack(@RequestParam Long track_id) {
+        trackRepository.deleteById(track_id);
+        return "redirect:/tracks";
+    }
+
+    @GetMapping("/deletealbum")
+    public String deleteAlbum(@RequestParam Long album_id) {
+        albumRepository.deleteById(album_id);
+        return "redirect:/albums";
+    }
+
+    @GetMapping("/deleteband")
+    public String deleteBand(@RequestParam Long band_id) {
+        bandRepository.deleteById(band_id);
+        return "redirect:/bands";
+    }
 }

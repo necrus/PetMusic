@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Index</title>
+    <title>Треки</title>
 </head>
 <body>
 <a th:href="@{/addtrack}">Добавить трек</a>
@@ -12,9 +12,8 @@
         <td th:text="${track.id}"></td>
         <td th:text="${track.trackName}"></td>
         <td th:text="${track.length}"></td>
-        <td>
-            <a th:href="@{'/edittrack?track_id=' + ${track.id}}">Редактировать</a>
-        </td>
+        <td><a th:href="@{'/edittrack?track_id=' + ${track.id}}">Редактировать</a></td>
+        <td><a th:href="@{'/deletetrack?track_id=' + ${track.id}}">Удалить</a></td>
     </tr>
 </table>
 </body>

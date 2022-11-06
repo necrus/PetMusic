@@ -9,13 +9,10 @@
 <table>
     <tr th:each="album: ${albums}">
         <td th:text="${album.id}"></td>
-        <td>
-            <a th:text="${album.albumName}" th:href="@{'/tracks?album_id=' + ${album.id}}"></a>
-        </td>
+        <td><a th:text="${album.albumName}" th:href="@{'/tracks?album_id=' + ${album.id}}"></a></td>
         <td th:text="${album.year}"></td>
-        <td>
-            <a th:href="@{'/editalbum?album_id=' + ${album.id}}">Редактировать</a>
-        </td>
+        <td><a th:href="@{'/editalbum?album_id=' + ${album.id}}">Редактировать</a></td>
+        <td><a th:href="@{'/deletealbum?album_id=' + ${album.id}}">Удалить</a></td>
     </tr>
 </table>
 </body>

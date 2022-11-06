@@ -13,9 +13,8 @@
             <a th:text="${band.bandName}" th:href="@{'/albums?band_id=' + ${band.id}}"></a>
         </td>
         <td th:text="${band.country}"></td>
-        <td>
-            <a th:href="@{'/editband?band_id=' + ${band.id}}">Редактировать</a>
-        </td>
+        <td><a th:href="@{'/editband?band_id=' + ${band.id}}">Редактировать</a></td>
+        <td><a th:href="@{'/deleteband?band_id=' + ${band.id}}">Удалить</a></td>
     </tr>
 </table>
 </body>

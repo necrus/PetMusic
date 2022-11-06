@@ -237,4 +237,25 @@ class MusicControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("band1")));
     }
+
+    @Test
+    void deleteTrack() throws Exception {
+        mockMvc.perform(get("/deletetrack?track_id=1"))
+                .andExpect(status().is3xxRedirection());
+        verify(trackRepository).deleteById(Mockito.eq(1L));
+    }
+
+    @Test
+    void deleteAlbum() throws Exception {
+        mockMvc.perform(get("/deletealbum?album_id=1"))
+                .andExpect(status().is3xxRedirection());
+        verify(albumRepository).deleteById(Mockito.eq(1L));
+    }
+
+    @Test
+    void deleteBand() throws Exception {
+        mockMvc.perform(get("/deleteband?band_id=1"))
+                .andExpect(status().is3xxRedirection());
+        verify(bandRepository).deleteById(Mockito.eq(1L));
+    }
 }
