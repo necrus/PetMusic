@@ -1,16 +1,14 @@
 package com.example.petmusic.entity;
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
+@Data
+@NoArgsConstructor
 public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -20,16 +18,17 @@ public class Genre {
     @Column(name = "genre_name", nullable = false, length = 50)
     private String genreName;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Genre genre = (Genre) o;
-        return id != null && Objects.equals(id, genre.id);
+    @ManyToMany
+    @JoinTable(name = "band_genre",
+            joinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "band_id", referencedColumnName = "id"))
+    private List<Band> bands;
+
+
+    public Genre(Long id, String genreName) {
+        this.id = id;
+        this.genreName = genreName;
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+
 }

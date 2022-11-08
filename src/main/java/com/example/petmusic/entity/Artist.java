@@ -22,12 +22,14 @@ public class Artist {
     @Basic
     @Column(name = "photo")
     private String photo;
-    @Basic
-    @Column(name = "band_id")
-    private Long bandId;
+
     @Basic
     @Column(name = "artist_name", length = 100)
     private String artistName;
+
+    @ManyToOne
+    @JoinColumn(name = "band_id")
+    private Band band;
 
     @Override
     public boolean equals(Object o) {

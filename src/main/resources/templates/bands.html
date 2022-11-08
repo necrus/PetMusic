@@ -9,10 +9,24 @@
 <table>
     <tr th:each="band: ${bands}">
         <td th:text="${band.id}"></td>
-        <td>
-            <a th:text="${band.bandName}" th:href="@{'/albums?band_id=' + ${band.id}}"></a>
-        </td>
+        <td><a th:text="${band.bandName}" th:href="@{'/albums?band_id=' + ${band.id}}"></a></td>
         <td th:text="${band.country}"></td>
+        <td>
+            <table>
+                <tr th:each="genre: ${band.genres}">
+                    <td th:text="${genre.genreName}"></td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            <table>
+                <tr th:each="artist: ${band.artists}">
+                    <td th:text="${artist.artistName}"></td>
+                    <td th:text="${artist.instrument}"></td>
+                    <td th:text="${artist.photo}"></td>
+                </tr>
+            </table>
+        </td>
         <td><a th:href="@{'/editband?band_id=' + ${band.id}}">Редактировать</a></td>
         <td><a th:href="@{'/deleteband?band_id=' + ${band.id}}">Удалить</a></td>
     </tr>

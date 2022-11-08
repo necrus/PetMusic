@@ -113,10 +113,6 @@ public class MusicController {
         return "redirect:/tracks";
     }
 
-    //todo Сделать обложки альбомов
-    //todo Сделать нормальное оформление страниц
-    //todo Использовать таблицы genre, artist
-
     @GetMapping("/edittrack")
     public String editTrackForm(@RequestParam Long track_id, Model model) {
         model.addAttribute("track", trackRepository.findById(track_id));
@@ -154,4 +150,8 @@ public class MusicController {
         bandRepository.deleteById(band_id);
         return "redirect:/bands";
     }
+
+    //todo Сделать обложки альбомов
+    //todo Сделать нормальное оформление страниц
+
 }
