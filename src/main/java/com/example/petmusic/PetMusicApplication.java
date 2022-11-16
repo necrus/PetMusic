@@ -10,4 +10,11 @@ public class PetMusicApplication {
         SpringApplication.run(PetMusicApplication.class, args);
     }
 
+//    @Bean
+//    MultipartConfigElement multipartConfigElement() {
+//        MultipartConfigFactory factory = new MultipartConfigFactory();
+//        factory.setMaxFileSize(DataSize.ofKilobytes(128));
+//        factory.setMaxRequestSize(DataSize.ofKilobytes(128));
+//        return factory.createMultipartConfig();
+//    }
 }

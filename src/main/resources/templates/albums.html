@@ -11,6 +11,9 @@
         <td th:text="${album.id}"></td>
         <td><a th:text="${album.albumName}" th:href="@{'/tracks?album_id=' + ${album.id}}"></a></td>
         <td th:text="${album.year}"></td>
+        <td>
+            <img th:if="${album.art} != null" th:src="@{'/album_art/?album_id=' + ${album.id}}" height="100" alt="art"/>
+        </td>
         <td><a th:href="@{'/editalbum?album_id=' + ${album.id}}">Редактировать</a></td>
         <td><a th:href="@{'/deletealbum?album_id=' + ${album.id}}">Удалить</a></td>
     </tr>

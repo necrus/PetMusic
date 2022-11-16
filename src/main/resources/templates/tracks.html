@@ -6,7 +6,8 @@
 </head>
 <body>
 <a th:href="@{/addtrack}">Добавить трек</a>
-<h2 th:if="${album_name} != null">Album: [[${album_name}]]</h2>
+<h2 th:if="${album} != null">Название альбома: [[${album.albumName}]]</h2>
+<img th:if="${album.art} != null" th:src="@{'/album_art?album_id=' + ${album.id}}" alt="album_art" height="500" >
 <table>
     <tr th:each="track: ${tracks}">
         <td th:text="${track.id}"></td>

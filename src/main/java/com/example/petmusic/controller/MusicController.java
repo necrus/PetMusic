@@ -7,10 +7,19 @@ import com.example.petmusic.repository.AlbumRepository;
 import com.example.petmusic.repository.BandRepository;
 import com.example.petmusic.repository.TrackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,7 +76,7 @@ public class MusicController {
         if (album_id.isPresent()) {
             tracks = trackRepository.findByAlbumId(album_id.get());
             Optional<Album> album = albumRepository.findById(album_id.get());
-            album.ifPresent(value -> model.addAttribute("album_name", value.getAlbumName()));
+            album.ifPresent(value -> model.addAttribute("album", value));
         } else {
             tracks = trackRepository.findAll();
         }
@@ -95,7 +104,10 @@ public class MusicController {
     }
 
     @PostMapping("/addalbum")
-    public String addAlbum(@ModelAttribute Album album) {
+    public String addAlbum(@ModelAttribute Album album, @RequestParam("file") MultipartFile file) throws IOException {
+        if (!file.isEmpty()) {
+            album.setArt(file.getBytes());
+        }
         albumRepository.save(album);
         return "redirect:/albums";
     }
@@ -153,5 +165,40 @@ public class MusicController {
 
     //todo Сделать обложки альбомов
     //todo Сделать нормальное оформление страниц
+
+    @GetMapping("/album_art")
+    public ResponseEntity<byte[]> getAlbumArt(@RequestParam Long album_id) {
+        Optional<Album> album = albumRepository.findById(album_id);
+        if (album.isEmpty()) return null;
+        byte[] imageContent = album.get().getArt();
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+        return new ResponseEntity<>(imageContent, headers, HttpStatus.OK);
+    }
+
+//    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+//    public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
+//                                                 @RequestParam("file") MultipartFile file) {
+//        if (!file.isEmpty()) {
+//            try {
+////                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(".//upload//"
+////                + name + "-uploaded.txt")));
+////                stream.write(bytes);
+////                stream.close();
+//                String basePathOfClass = getClass()
+//                        .getProtectionDomain().getCodeSource().getLocation().getFile();
+//
+//
+//
+//                Files.write(Path.of(basePathOfClass + file.getOriginalFilename()), file.getBytes());
+////                storageService.store(file);
+//                return "Вы удачно загрузили " + name + " в " + name + "-uploaded !";
+//            } catch (Exception e) {
+//                return "Вам не удалось загрузить " + name + " => " + e.getMessage();
+//            }
+//        } else {
+//            return "Вам не удалось загрузить " + name + " потому что файл пустой.";
+//        }
+//    }
 
 }

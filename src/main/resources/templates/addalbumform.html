@@ -6,7 +6,7 @@
 </head>
 <body>
 <h2>Добавление альбома</h2>
-<form th:action="@{/addalbum}" method="post" th:object="${album}">
+<form th:action="@{/addalbum}" method="post" th:object="${album}" enctype="multipart/form-data">
     <label for="id"></label>
     <input hidden type="text" th:field="*{id}" id="id">
     <label for="albumName">Название альбома: </label>
@@ -23,6 +23,8 @@
         <option th:each="band: ${bands}" th:value="${band.id}" th:text="${band.bandName}">bandId</option>
     </select>
     <br/>
+    <img th:src="@{'/album_art?album_id=' + ${{album.id}}}" height="500" alt="album_art">
+    <input type="file" name="file">
     <input type="submit" value="Добавить">
 </form>
 </body>

@@ -9,7 +9,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 public class Album {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +28,9 @@ public class Album {
     @Basic
     @Column(name = "band_id")
     private Long bandId;
+
+    @Column(name = "art")
+    private byte[] art;
 
     @Override
     public boolean equals(Object o) {

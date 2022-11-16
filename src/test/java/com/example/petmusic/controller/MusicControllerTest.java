@@ -78,8 +78,8 @@ class MusicControllerTest {
     @WithMockUser(roles = "ADMIN")
     void albumsAll() throws Exception {
         when(albumRepository.findAll()).thenReturn(Arrays.asList(
-                new Album(1L, "album1", 1991, "", 1L),
-                new Album(2L, "album2", 1992, "", 2L)
+                new Album(1L, "album1", 1991, "", 1L, null),
+                new Album(2L, "album2", 1992, "", 2L, null)
         ));
 
         mockMvc.perform(get("/albums"))
@@ -91,8 +91,8 @@ class MusicControllerTest {
     @WithMockUser(roles = "ADMIN")
     void albumsWithParameters() throws Exception {
         when(albumRepository.findByBandId(1L)).thenReturn(Arrays.asList(
-                new Album(1L, "album1", 1991, "", 1L),
-                new Album(2L, "album2", 1992, "", 1L)
+                new Album(1L, "album1", 1991, "", 1L, null),
+                new Album(2L, "album2", 1992, "", 1L, null)
         ));
 
         mockMvc.perform(get("/albums?band_id=1"))
@@ -121,7 +121,7 @@ class MusicControllerTest {
                 new Track(2L, "track2", Time.valueOf("02:02:02"), 1L)
         ));
         when(albumRepository.findById(1L)).thenReturn(Optional.of(
-                new Album(1L, "album1", 1991, "", 1L)
+                new Album(1L, "album1", 1991, "", 1L, null)
         ));
 
         mockMvc.perform(get("/tracks?album_id=1"))
@@ -164,7 +164,7 @@ class MusicControllerTest {
 
     @Test
     void addAlbum() throws Exception {
-        Album album = new Album(null, "test", 1990, "", 1L);
+        Album album = new Album(null, "test", 1990, "", 1L, null);
         mockMvc.perform(post("/addalbum")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .content("albumName=test&year=1990&albumArt=&bandId=1"))
@@ -175,8 +175,8 @@ class MusicControllerTest {
     @Test
     void addTrackForm() throws Exception {
         when(albumRepository.findAll()).thenReturn(Arrays.asList(
-                new Album(1L, "album1", 1991, "", 1L),
-                new Album(2L, "album2", 1992, "", 1L)
+                new Album(1L, "album1", 1991, "", 1L, null),
+                new Album(2L, "album2", 1992, "", 1L, null)
         ));
 
         mockMvc.perform(get("/addtrack"))
@@ -201,8 +201,8 @@ class MusicControllerTest {
                 new Track(1L, "track1", Time.valueOf("01:01:01"), 1L)
         ));
         when(albumRepository.findAll()).thenReturn(Arrays.asList(
-                new Album(1L, "album1", 1991, "", 1L),
-                new Album(2L, "album2", 1992, "", 1L)
+                new Album(1L, "album1", 1991, "", 1L, null),
+                new Album(2L, "album2", 1992, "", 1L, null)
         ));
 
         mockMvc.perform(get("/edittrack?track_id=1"))
@@ -214,7 +214,7 @@ class MusicControllerTest {
     @Test
     void editAlbumForm() throws Exception {
         when(albumRepository.findById(1L)).thenReturn(Optional.of(
-                new Album(1L, "album1", 1991, "", 1L)
+                new Album(1L, "album1", 1991, "", 1L, null)
         ));
         when(bandRepository.findAll()).thenReturn(Arrays.asList(
                 new Band(1L, "country1", "band1"),

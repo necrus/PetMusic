@@ -1,3 +1,10 @@
+
+### upload file
+POST http://localhost:8080/upload?name='file.log'&file='c:/users/nec/DumpStack.log'
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+
+
 ### addBand
 POST http://localhost:8080/addband
 Content-Type: application/x-www-form-urlencoded
