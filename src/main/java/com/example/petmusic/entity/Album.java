@@ -3,6 +3,7 @@ package com.example.petmusic.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -19,12 +20,11 @@ public class Album {
     @Basic
     @Column(name = "album_name", nullable = false, length = 100)
     private String albumName;
+
     @Basic
     @Column(name = "year")
     private Integer year;
-    @Basic
-    @Column(name = "album_art")
-    private String albumArt;
+
     @Basic
     @Column(name = "band_id")
     private Long bandId;
@@ -42,8 +42,8 @@ public class Album {
         if (!Objects.equals(id, album.id)) return false;
         if (!Objects.equals(albumName, album.albumName)) return false;
         if (!Objects.equals(year, album.year)) return false;
-        if (!Objects.equals(albumArt, album.albumArt)) return false;
-        return Objects.equals(bandId, album.bandId);
+        if (!Objects.equals(bandId, album.bandId)) return false;
+        return Arrays.equals(art, album.art);
     }
 
     @Override
@@ -51,8 +51,8 @@ public class Album {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (albumName != null ? albumName.hashCode() : 0);
         result = 31 * result + (year != null ? year.hashCode() : 0);
-        result = 31 * result + (albumArt != null ? albumArt.hashCode() : 0);
         result = 31 * result + (bandId != null ? bandId.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(art);
         return result;
     }
 }

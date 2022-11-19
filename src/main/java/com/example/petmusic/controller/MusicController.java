@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -104,8 +105,8 @@ public class MusicController {
     }
 
     @PostMapping("/addalbum")
-    public String addAlbum(@ModelAttribute Album album, @RequestParam("file") MultipartFile file) throws IOException {
-        if (!file.isEmpty()) {
+    public String addAlbum(@ModelAttribute Album album, @RequestParam(required = false) MultipartFile file) throws IOException {
+        if (file != null && !file.isEmpty()) {
             album.setArt(file.getBytes());
         }
         albumRepository.save(album);
@@ -163,42 +164,26 @@ public class MusicController {
         return "redirect:/bands";
     }
 
-    //todo Сделать обложки альбомов
+    //todo Сделать обложки альбомов с пустыми картинками
     //todo Сделать нормальное оформление страниц
 
     @GetMapping("/album_art")
-    public ResponseEntity<byte[]> getAlbumArt(@RequestParam Long album_id) {
+    public ResponseEntity<byte[]> getAlbumArt(@RequestParam Long album_id) throws IOException {
         Optional<Album> album = albumRepository.findById(album_id);
         if (album.isEmpty()) return null;
         byte[] imageContent = album.get().getArt();
+
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);
+        if (imageContent == null) {
+            try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("static/placeholder.png")) {
+                if (inputStream != null) {
+                    imageContent = inputStream.readAllBytes();
+                }
+            }
+        }
         return new ResponseEntity<>(imageContent, headers, HttpStatus.OK);
     }
 
-//    @RequestMapping(value = "/upload", method = RequestMethod.POST)
-//    public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
-//                                                 @RequestParam("file") MultipartFile file) {
-//        if (!file.isEmpty()) {
-//            try {
-////                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(".//upload//"
-////                + name + "-uploaded.txt")));
-////                stream.write(bytes);
-////                stream.close();
-//                String basePathOfClass = getClass()
-//                        .getProtectionDomain().getCodeSource().getLocation().getFile();
-//
-//
-//
-//                Files.write(Path.of(basePathOfClass + file.getOriginalFilename()), file.getBytes());
-////                storageService.store(file);
-//                return "Вы удачно загрузили " + name + " в " + name + "-uploaded !";
-//            } catch (Exception e) {
-//                return "Вам не удалось загрузить " + name + " => " + e.getMessage();
-//            }
-//        } else {
-//            return "Вам не удалось загрузить " + name + " потому что файл пустой.";
-//        }
-//    }
 
 }

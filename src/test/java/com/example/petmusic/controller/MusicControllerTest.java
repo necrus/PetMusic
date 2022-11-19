@@ -13,9 +13,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.io.InputStream;
 import java.sql.Time;
 import java.util.Arrays;
 import java.util.Optional;
@@ -78,8 +82,8 @@ class MusicControllerTest {
     @WithMockUser(roles = "ADMIN")
     void albumsAll() throws Exception {
         when(albumRepository.findAll()).thenReturn(Arrays.asList(
-                new Album(1L, "album1", 1991, "", 1L, null),
-                new Album(2L, "album2", 1992, "", 2L, null)
+                new Album(1L, "album1", 1991, 1L, null),
+                new Album(2L, "album2", 1992, 2L, null)
         ));
 
         mockMvc.perform(get("/albums"))
@@ -91,8 +95,8 @@ class MusicControllerTest {
     @WithMockUser(roles = "ADMIN")
     void albumsWithParameters() throws Exception {
         when(albumRepository.findByBandId(1L)).thenReturn(Arrays.asList(
-                new Album(1L, "album1", 1991, "", 1L, null),
-                new Album(2L, "album2", 1992, "", 1L, null)
+                new Album(1L, "album1", 1991, 1L, null),
+                new Album(2L, "album2", 1992, 1L, null)
         ));
 
         mockMvc.perform(get("/albums?band_id=1"))
@@ -121,13 +125,14 @@ class MusicControllerTest {
                 new Track(2L, "track2", Time.valueOf("02:02:02"), 1L)
         ));
         when(albumRepository.findById(1L)).thenReturn(Optional.of(
-                new Album(1L, "album1", 1991, "", 1L, null)
+                new Album(1L, "album1", 1991, 1L, new byte[]{11, 22, 33})
         ));
 
         mockMvc.perform(get("/tracks?album_id=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("track1")))
-                .andExpect(content().string(containsString("album1")));
+                .andExpect(content().string(containsString("album1")))
+                .andExpect(content().string(containsString("/album_art?album_id=1")));
     }
 
     @Test
@@ -164,19 +169,52 @@ class MusicControllerTest {
 
     @Test
     void addAlbum() throws Exception {
-        Album album = new Album(null, "test", 1990, "", 1L, null);
-        mockMvc.perform(post("/addalbum")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .content("albumName=test&year=1990&albumArt=&bandId=1"))
+
+//        mockMvc.perform(multipart("/addalbum")
+////                        .content("albumName=test&year=1990&albumArt=&bandId=1")
+////                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+//                                .content(new byte[] {1, 2, 3})
+//                                .contentType(MediaType.MULTIPART_FORM_DATA)
+//                )
+//                .andExpect(status().is3xxRedirection());
+//        String endpoint = "/addalbum";
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("static/placeholder.png");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", inputStream);
+        Album testAlbum = new Album(null, "test", 1990, 1L, multipartFile.getBytes());
+//        HashMap<String, String> contentTypeParams = new HashMap<>();
+//        contentTypeParams.put("boundary", "webboundary");
+//        MediaType mediaType = new MediaType("multipart", "form-data", contentTypeParams);
+
+
+//        mockMvc.perform(multipart(endpoint)
+////                        .content("name='albumName' test")
+////                                .contentType(MediaType.MULTIPART_FORM_DATA)
+//                                .content(multipartFile.getBytes())
+//                                .contentType(mediaType)
+//                                .param("albumName", "test")
+//                                .param("year", "1990")
+//                                .param("bandId", "1")
+//                )
+
+//                .andExpect(status().is3xxRedirection());
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.multipart("/addalbum")
+                .file(multipartFile)
+                .param("albumName", "test")
+                .param("year", "1990")
+                .param("bandId", "1");
+        mockMvc.perform(requestBuilder)
                 .andExpect(status().is3xxRedirection());
-        verify(albumRepository).save(Mockito.eq(album));
+
+        verify(albumRepository).save(Mockito.eq(testAlbum));
     }
 
     @Test
     void addTrackForm() throws Exception {
         when(albumRepository.findAll()).thenReturn(Arrays.asList(
-                new Album(1L, "album1", 1991, "", 1L, null),
-                new Album(2L, "album2", 1992, "", 1L, null)
+                new Album(1L, "album1", 1991, 1L, null),
+                new Album(2L, "album2", 1992, 1L, null)
         ));
 
         mockMvc.perform(get("/addtrack"))
@@ -201,8 +239,8 @@ class MusicControllerTest {
                 new Track(1L, "track1", Time.valueOf("01:01:01"), 1L)
         ));
         when(albumRepository.findAll()).thenReturn(Arrays.asList(
-                new Album(1L, "album1", 1991, "", 1L, null),
-                new Album(2L, "album2", 1992, "", 1L, null)
+                new Album(1L, "album1", 1991, 1L, null),
+                new Album(2L, "album2", 1992, 1L, null)
         ));
 
         mockMvc.perform(get("/edittrack?track_id=1"))
@@ -214,7 +252,7 @@ class MusicControllerTest {
     @Test
     void editAlbumForm() throws Exception {
         when(albumRepository.findById(1L)).thenReturn(Optional.of(
-                new Album(1L, "album1", 1991, "", 1L, null)
+                new Album(1L, "album1", 1991, 1L, null)
         ));
         when(bandRepository.findAll()).thenReturn(Arrays.asList(
                 new Band(1L, "country1", "band1"),
@@ -257,5 +295,30 @@ class MusicControllerTest {
         mockMvc.perform(get("/deleteband?band_id=1"))
                 .andExpect(status().is3xxRedirection());
         verify(bandRepository).deleteById(Mockito.eq(1L));
+    }
+
+    @Test
+    void getAlbumArt() throws Exception {
+        when(albumRepository.findById(1L)).thenReturn(Optional.of(
+                new Album(1L, "album1", 1991, 1L, new byte[]{11, 22, 33})
+        ));
+        when(albumRepository.findById(2L)).thenReturn(Optional.of(
+                new Album(2L, "album1", 1991, 1L, null)
+        ));
+
+        mockMvc.perform(get("/album_art?album_id=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().bytes(new byte[]{11, 22, 33}));
+
+        byte[] imageContent = null;
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("static/placeholder.png")) {
+            if (inputStream != null) {
+                imageContent = inputStream.readAllBytes();
+            }
+        }
+        assert imageContent != null;
+        mockMvc.perform(get("/album_art?album_id=2"))
+                .andExpect(status().isOk())
+                .andExpect(content().bytes(imageContent));
     }
 }

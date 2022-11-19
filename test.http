@@ -1,7 +1,26 @@
 
-### upload file
-POST http://localhost:8080/upload?name='file.log'&file='c:/users/nec/DumpStack.log'
+### send file
+# @no-redirect
+POST http://localhost:8080/addalbum
+Authorization: Digest user {bcrypt}$2a$12$wtmIbhC1ROyo0lIfEVxsjeyh0N1LNDoadl/gfo8RLMwP/2bDPUEbe
 Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="albumName"
+Content-Type: text/plain
+
+Name
+--WebAppBoundary
+Content-Disposition: form-data; name="year"
+Content-Type: text/plain
+
+2022
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="placeholder.png"
+Content-Type: image/png
+
+< ./src/main/resources/static/placeholder.png
+--WebAppBoundary--
 
 
 
@@ -11,7 +30,4 @@ Content-Type: application/x-www-form-urlencoded
 
 bandName=test&country=test
 
-
-### get
-GET http://localhost:8080/test
 
