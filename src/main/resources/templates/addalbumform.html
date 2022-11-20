@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>Добавление альбома</title>
 </head>
 <body>
@@ -20,9 +21,11 @@
         <option th:each="band: ${bands}" th:value="${band.id}" th:text="${band.bandName}">bandId</option>
     </select>
     <br/>
-    <img th:src="@{'/album_art?album_id=' + ${{album.id}}}" height="500" alt="album_art">
+    <img th:src="@{'/album_art?album_id=' + ${{album.id}}}" height="500" alt="album_art" src="">
+    <br/>
     <input type="file" name="file">
-    <input type="submit" value="Добавить">
+    <br/>
+    <input type="submit" value="Добавить/Изменить">
 </form>
 </body>
 </html>

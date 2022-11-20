@@ -1,9 +1,11 @@
 package com.example.petmusic.controller;
 
 import com.example.petmusic.entity.Album;
+import com.example.petmusic.entity.Artist;
 import com.example.petmusic.entity.Band;
 import com.example.petmusic.entity.Track;
 import com.example.petmusic.repository.AlbumRepository;
+import com.example.petmusic.repository.ArtistRepository;
 import com.example.petmusic.repository.BandRepository;
 import com.example.petmusic.repository.TrackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +32,7 @@ public class MusicController {
     TrackRepository trackRepository;
     BandRepository bandRepository;
     AlbumRepository albumRepository;
+    ArtistRepository artistRepository;
 
     @Autowired
     public void setAlbumRepository(AlbumRepository albumRepository) {
@@ -45,16 +49,23 @@ public class MusicController {
         this.trackRepository = trackRepository;
     }
 
+    @Autowired
+    public void setArtistRepository(ArtistRepository artistRepository) {
+        this.artistRepository = artistRepository;
+    }
+
     @GetMapping
-    public String index(Model model) {
-        List<Track> tracks = trackRepository.findAll();
-        model.addAttribute("tracks", tracks);
-        return "index";
+    public String index() {
+//        List<Track> tracks = trackRepository.findAll();
+//        model.addAttribute("tracks", tracks);
+//        return "index";
+        return "redirect:bands";
     }
 
     @GetMapping("/bands")
     public String bands(Model model) {
         List<Band> bands = bandRepository.findAll();
+        bands.sort(Comparator.comparingLong(Band::getId));
         model.addAttribute("bands", bands);
         return "bands";
     }
@@ -64,9 +75,12 @@ public class MusicController {
         List<Album> albums;
         if (band_id.isPresent()) {
             albums = albumRepository.findByBandId(band_id.get());
+            Optional<Band> band = bandRepository.findById(band_id.get());
+            band.ifPresent(value -> model.addAttribute("band", value));
         } else {
             albums = albumRepository.findAll();
         }
+        albums.sort(Comparator.comparingLong(Album::getId));
         model.addAttribute("albums", albums);
         return "albums";
     }
@@ -81,6 +95,7 @@ public class MusicController {
         } else {
             tracks = trackRepository.findAll();
         }
+        tracks.sort(Comparator.comparingLong(Track::getId));
         model.addAttribute("tracks", tracks);
         return "tracks";
     }
@@ -164,7 +179,7 @@ public class MusicController {
         return "redirect:/bands";
     }
 
-    //todo Сделать обложки альбомов с пустыми картинками
+
     //todo Сделать нормальное оформление страниц
 
     @GetMapping("/album_art")
@@ -173,6 +188,19 @@ public class MusicController {
         if (album.isEmpty()) return null;
         byte[] imageContent = album.get().getArt();
 
+        return getResponseEntity(imageContent);
+    }
+
+    @GetMapping("/artist_photo")
+    public ResponseEntity<byte[]> getArtistPhoto(@RequestParam Long artist_id) throws IOException {
+        Optional<Artist> artist = artistRepository.findById(artist_id);
+        if (artist.isEmpty()) return null;
+        byte[] imageContent = artist.get().getPhoto();
+
+        return getResponseEntity(imageContent);
+    }
+
+    private ResponseEntity<byte[]> getResponseEntity(byte[] imageContent) throws IOException {
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);
         if (imageContent == null) {

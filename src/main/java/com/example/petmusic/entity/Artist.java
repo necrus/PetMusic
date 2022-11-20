@@ -10,7 +10,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class Artist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -21,7 +21,7 @@ public class Artist {
     private String instrument;
     @Basic
     @Column(name = "photo")
-    private String photo;
+    private byte[] photo;
 
     @Basic
     @Column(name = "artist_name", length = 100)
@@ -30,6 +30,13 @@ public class Artist {
     @ManyToOne
     @JoinColumn(name = "band_id")
     private Band band;
+
+    public Artist(Long id, String instrument, byte[] photo, String artistName) {
+        this.id = id;
+        this.instrument = instrument;
+        this.photo = photo;
+        this.artistName = artistName;
+    }
 
     @Override
     public boolean equals(Object o) {

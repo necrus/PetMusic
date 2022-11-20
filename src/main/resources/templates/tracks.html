@@ -2,21 +2,33 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>Треки</title>
 </head>
+
 <body>
-<a th:href="@{/addtrack}">Добавить трек</a>
-<h2 th:if="${album} != null">Название альбома: [[${album.albumName}]]</h2>
+<a th:href="@{/addtrack}" class="btn">Добавить трек</a>
 <div th:if="${album} != null">
-    <img th:if="${album.art} != null" th:src="@{'/album_art?album_id=' + ${album.id}}" alt="album_art" height="500">
+    <h2>Название альбома: [[${album.albumName}]]</h2>
+    <img th:if="${album.art} != null" th:src="@{'/album_art?album_id=' + ${album.id}}" alt="album_art" height="500"
+         src="">
 </div>
 <table>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Продолжителность</th>
+        <th>Редактирование</th>
+    </tr>
     <tr th:each="track: ${tracks}">
         <td th:text="${track.id}"></td>
         <td th:text="${track.trackName}"></td>
         <td th:text="${track.length}"></td>
-        <td><a th:href="@{'/edittrack?track_id=' + ${track.id}}">Редактировать</a></td>
-        <td><a th:href="@{'/deletetrack?track_id=' + ${track.id}}">Удалить</a></td>
+        <td>
+            <a th:href="@{'/edittrack?track_id=' + ${track.id}}" class="btn">Редактировать</a>
+
+            <a th:href="@{'/deletetrack?track_id=' + ${track.id}}" class="btn">Удалить</a>
+        </td>
     </tr>
 </table>
 </body>

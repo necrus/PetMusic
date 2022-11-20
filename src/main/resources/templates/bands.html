@@ -2,11 +2,21 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Index</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Группы</title>
 </head>
 <body>
-<a th:href="@{/addband}">Добавить группу</a>
+<a th:href="@{/addband}" class="btn">Добавить группу</a>
 <table>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Страна</th>
+        <th>Жанры</th>
+        <th>Исполнители</th>
+        <th>Редактирование</th>
+    </tr>
+
     <tr th:each="band: ${bands}">
         <td th:text="${band.id}"></td>
         <td><a th:text="${band.bandName}" th:href="@{'/albums?band_id=' + ${band.id}}"></a></td>
@@ -20,6 +30,11 @@
         </td>
         <td>
             <table>
+                <tr>
+                    <th>Имя</th>
+                    <th>Инструменты</th>
+                    <th>Фото</th>
+                </tr>
                 <tr th:each="artist: ${band.artists}">
                     <td th:text="${artist.artistName}"></td>
                     <td th:text="${artist.instrument}"></td>
@@ -27,8 +42,10 @@
                 </tr>
             </table>
         </td>
-        <td><a th:href="@{'/editband?band_id=' + ${band.id}}">Редактировать</a></td>
-        <td><a th:href="@{'/deleteband?band_id=' + ${band.id}}">Удалить</a></td>
+        <td>
+            <a th:href="@{'/editband?band_id=' + ${band.id}}" class="btn">Редактировать</a>
+            <a th:href="@{'/deleteband?band_id=' + ${band.id}}" class="btn">Удалить</a>
+        </td>
     </tr>
 </table>
 </body>

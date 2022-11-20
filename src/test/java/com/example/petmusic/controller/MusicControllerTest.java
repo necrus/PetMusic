@@ -1,9 +1,11 @@
 package com.example.petmusic.controller;
 
 import com.example.petmusic.entity.Album;
+import com.example.petmusic.entity.Artist;
 import com.example.petmusic.entity.Band;
 import com.example.petmusic.entity.Track;
 import com.example.petmusic.repository.AlbumRepository;
+import com.example.petmusic.repository.ArtistRepository;
 import com.example.petmusic.repository.BandRepository;
 import com.example.petmusic.repository.TrackRepository;
 import org.junit.jupiter.api.Test;
@@ -50,18 +52,14 @@ class MusicControllerTest {
     AlbumRepository albumRepository;
     @MockBean
     BandRepository bandRepository;
+    @MockBean
+    ArtistRepository artistRepository;
 
     @Test
 //    @WithMockUser(username = "admin", roles = {"ADMIN"}, authorities = {"ALL"})
     void index() throws Exception {
-        when(trackRepository.findAll()).thenReturn(Arrays.asList(
-                new Track(1L, "track1", Time.valueOf("01:01:01"), 1L),
-                new Track(2L, "track2", Time.valueOf("02:02:02"), 2L)
-        ));
-
         mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("track1")));
+                .andExpect(status().is3xxRedirection());
     }
 
 
@@ -318,6 +316,32 @@ class MusicControllerTest {
         }
         assert imageContent != null;
         mockMvc.perform(get("/album_art?album_id=2"))
+                .andExpect(status().isOk())
+                .andExpect(content().bytes(imageContent));
+    }
+
+    @Test
+    void getArtistPhoto() throws Exception {
+        when(artistRepository.findById(1L)).thenReturn(Optional.of(
+                new Artist(1L, "instrument1", new byte[]{11, 22, 33}, "artist1")
+        ));
+        when(artistRepository.findById(2L)).thenReturn(Optional.of(
+                new Artist(2L, "instrument2", null, "artist2")
+        ));
+
+
+        mockMvc.perform(get("/artist_photo?artist_id=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().bytes(new byte[]{11, 22, 33}));
+
+        byte[] imageContent = null;
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("static/placeholder.png")) {
+            if (inputStream != null) {
+                imageContent = inputStream.readAllBytes();
+            }
+        }
+        assert imageContent != null;
+        mockMvc.perform(get("/artist_photo?artist_id=2"))
                 .andExpect(status().isOk())
                 .andExpect(content().bytes(imageContent));
     }
