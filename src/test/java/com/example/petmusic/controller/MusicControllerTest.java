@@ -179,7 +179,7 @@ class MusicControllerTest {
 
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("static/placeholder.png");
         MockMultipartFile multipartFile = new MockMultipartFile("file", inputStream);
-        Album testAlbum = new Album(null, "test", 1990, 1L, multipartFile.getBytes());
+        Album testAlbum = new Album(1L, "test", 1990, 1L, multipartFile.getBytes());
 //        HashMap<String, String> contentTypeParams = new HashMap<>();
 //        contentTypeParams.put("boundary", "webboundary");
 //        MediaType mediaType = new MediaType("multipart", "form-data", contentTypeParams);
@@ -201,6 +201,7 @@ class MusicControllerTest {
                 .file(multipartFile)
                 .param("albumName", "test")
                 .param("year", "1990")
+                .param("id", "1")
                 .param("bandId", "1");
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is3xxRedirection());
@@ -344,5 +345,62 @@ class MusicControllerTest {
         mockMvc.perform(get("/artist_photo?artist_id=2"))
                 .andExpect(status().isOk())
                 .andExpect(content().bytes(imageContent));
+    }
+
+    @Test
+    void addArtistForm() throws Exception {
+        when(bandRepository.findById(1L)).thenReturn(Optional.of(
+                new Band(1L, "country1", "band1")
+        ));
+        mockMvc.perform(get("/addartist?band_id=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Добавление исполнителя")))
+                .andExpect(content().string(containsString("band1")));
+    }
+
+    @Test
+    void editArtistForm() throws Exception {
+        Artist artist = new Artist(1L, "instrument1", null, "artist1");
+        artist.setBand(new Band(1L, "country1", "band1"));
+        when(artistRepository.findById(1L)).thenReturn(Optional.of(artist));
+
+        mockMvc.perform(get("/editartist?artist_id=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("artist1")))
+                .andExpect(content().string(containsString("band1")));
+    }
+
+    @Test
+    void deleteArtist() throws Exception {
+        Artist artist = new Artist(1L, "instrument1", null, "artist1");
+        artist.setBand(new Band(1L, "country1", "band1"));
+        when(artistRepository.findById(1L)).thenReturn(Optional.of(artist));
+        mockMvc.perform(get("/deleteartist?artist_id=1"))
+                .andExpect(status().is3xxRedirection());
+        verify(artistRepository).deleteById(Mockito.eq(1L));
+    }
+
+    @Test
+    void addArtist() throws Exception {
+        Band band = new Band(1L, "country1", "band1");
+        when(bandRepository.findById(1L)).thenReturn(Optional.of(
+                band
+        ));
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("static/placeholder.png");
+        MockMultipartFile multipartFile = new MockMultipartFile("file", inputStream);
+        Artist testArtist = new Artist(1L, "instrument1", multipartFile.getBytes(), "artist1");
+        testArtist.setBand(band);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.multipart("/addartist")
+                .file(multipartFile)
+                .param("id", "1")
+                .param("artistName", "artist1")
+                .param("instrument", "instrument1")
+                .param("band.id", "1")
+                .param("band.country", "country1")
+                .param("band.bandName", "band1");
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is3xxRedirection());
+
+        verify(artistRepository).save(Mockito.eq(testArtist));
     }
 }

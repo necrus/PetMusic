@@ -1,9 +1,12 @@
 package com.example.petmusic.entity;
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -41,13 +44,24 @@ public class Artist {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         Artist artist = (Artist) o;
-        return id != null && Objects.equals(id, artist.id);
+
+        if (!Objects.equals(id, artist.id)) return false;
+        if (!Objects.equals(instrument, artist.instrument)) return false;
+        if (!Arrays.equals(photo, artist.photo)) return false;
+        if (!Objects.equals(artistName, artist.artistName)) return false;
+        return Objects.equals(band, artist.band);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (instrument != null ? instrument.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(photo);
+        result = 31 * result + (artistName != null ? artistName.hashCode() : 0);
+        result = 31 * result + (band != null ? band.hashCode() : 0);
+        return result;
     }
 }

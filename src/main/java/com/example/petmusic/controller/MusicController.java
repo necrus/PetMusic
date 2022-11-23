@@ -100,6 +100,8 @@ public class MusicController {
         return "tracks";
     }
 
+    // ADD objects:
+
     @GetMapping("/addband")
     public String addBandForm(Model model) {
         model.addAttribute("band", new Band());
@@ -120,7 +122,7 @@ public class MusicController {
     }
 
     @PostMapping("/addalbum")
-    public String addAlbum(@ModelAttribute Album album, @RequestParam(required = false) MultipartFile file) throws IOException {
+    public String addAlbum(@ModelAttribute Album album, @RequestParam MultipartFile file) throws IOException {
         if (file != null && !file.isEmpty()) {
             album.setArt(file.getBytes());
         }
@@ -140,6 +142,25 @@ public class MusicController {
         trackRepository.save(track);
         return "redirect:/tracks";
     }
+
+    @GetMapping("/addartist")
+    public String addArtistForm(@RequestParam Long band_id, Model model) {
+        Artist artist = new Artist();
+        Optional<Band> optionalBand = bandRepository.findById(band_id);
+        optionalBand.ifPresent(artist::setBand);
+        model.addAttribute("artist", artist);
+        return "addartistform";
+    }
+
+    @PostMapping("/addartist")
+    public String addArtist(@ModelAttribute Artist artist, @RequestParam MultipartFile file) throws IOException {
+        if (file != null && !file.isEmpty()) {
+            artist.setPhoto(file.getBytes());
+        }
+        artistRepository.save(artist);
+        return "redirect:/albums?band_id=" + artist.getBand().getId();
+    }
+    // EDIT objects:
 
     @GetMapping("/edittrack")
     public String editTrackForm(@RequestParam Long track_id, Model model) {
@@ -161,6 +182,15 @@ public class MusicController {
         return "addbandform";
     }
 
+    @GetMapping("/editartist")
+    public String editArtistForm(@RequestParam Long artist_id, Model model) {
+        Optional<Artist> optionalArtist = artistRepository.findById(artist_id);
+        optionalArtist.ifPresent(artist -> model.addAttribute("artist", artist));
+        return "addartistform";
+    }
+
+    // DELETE objects:
+
     @GetMapping("/deletetrack")
     public String deleteTrack(@RequestParam Long track_id) {
         trackRepository.deleteById(track_id);
@@ -179,26 +209,15 @@ public class MusicController {
         return "redirect:/bands";
     }
 
-
-    //todo Сделать нормальное оформление страниц
-
-    @GetMapping("/album_art")
-    public ResponseEntity<byte[]> getAlbumArt(@RequestParam Long album_id) throws IOException {
-        Optional<Album> album = albumRepository.findById(album_id);
-        if (album.isEmpty()) return null;
-        byte[] imageContent = album.get().getArt();
-
-        return getResponseEntity(imageContent);
+    @GetMapping("/deleteartist")
+    public String deleteArtist(@RequestParam Long artist_id) {
+        Optional<Artist> optionalArtist = artistRepository.findById(artist_id);
+        artistRepository.deleteById(artist_id);
+        return "redirect:/albums?band_id=" + optionalArtist.orElseThrow().getBand().getId();
     }
 
-    @GetMapping("/artist_photo")
-    public ResponseEntity<byte[]> getArtistPhoto(@RequestParam Long artist_id) throws IOException {
-        Optional<Artist> artist = artistRepository.findById(artist_id);
-        if (artist.isEmpty()) return null;
-        byte[] imageContent = artist.get().getPhoto();
 
-        return getResponseEntity(imageContent);
-    }
+    // SHOW BLOB images:
 
     private ResponseEntity<byte[]> getResponseEntity(byte[] imageContent) throws IOException {
         final HttpHeaders headers = new HttpHeaders();
@@ -213,5 +232,24 @@ public class MusicController {
         return new ResponseEntity<>(imageContent, headers, HttpStatus.OK);
     }
 
+    @GetMapping("/artist_photo")
+    public ResponseEntity<byte[]> getArtistPhoto(@RequestParam Long artist_id) throws IOException {
+        Optional<Artist> artist = artistRepository.findById(artist_id);
+        if (artist.isEmpty()) return null;
+        byte[] imageContent = artist.get().getPhoto();
 
+        return getResponseEntity(imageContent);
+    }
+
+    @GetMapping("/album_art")
+    public ResponseEntity<byte[]> getAlbumArt(@RequestParam Long album_id) throws IOException {
+        Optional<Album> album = albumRepository.findById(album_id);
+        if (album.isEmpty()) return null;
+        byte[] imageContent = album.get().getArt();
+
+        return getResponseEntity(imageContent);
+    }
+
+    //todo Сделать добавление/редактирование артистов
+    //todo Сделать нормальное оформление страниц
 }

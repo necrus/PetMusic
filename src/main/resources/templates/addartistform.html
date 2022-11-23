@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Добавление исполнителя</title>
+</head>
+<body>
+<h2>Добавление трека</h2>
+<form th:action="@{/addartist}" method="post" th:object="${artist}" enctype="multipart/form-data">
+    <label for="id"></label>
+    <input hidden type="text" th:field="*{id}" id="id"><br>
+    <label for="artistName">Имя: </label>
+    <input type="text" th:field="*{artistName}" id="artistName"><br>
+    <label for="instrument">Инструмент: </label>
+    <input type="text" th:field="*{instrument}" id="instrument"><br>
+    <label for="band">Группа: </label>
+    <input type="hidden" th:field="*{band}" id="band">
+    <span th:text="*{band.bandName}">band_name</span><br>
+    <img th:src="@{'/artist_photo?artist_id=' + ${artist.id}}" alt="" src="" height="500"><br>
+    <input type="file" name="file"><br>
+    <input type="submit" value="Добавить/Изменить">
+</form>
+</body>
+</html>

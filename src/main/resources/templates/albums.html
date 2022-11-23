@@ -11,16 +11,27 @@
     <h2 th:text="${band.bandName}">bandName</h2>
     <h3>Участники</h3>
     <table>
+        <tr>
+            <th>Имя</th>
+            <th>Инструмент</th>
+            <th>Фото</th>
+            <th>Редактирование</th>
+        </tr>
         <tr th:each="artist: ${band.artists}">
             <td th:text="${artist.artistName}">artistName</td>
             <td th:text="${artist.instrument}">instrument</td>
             <td>
                 <img th:src="@{'/artist_photo?artist_id=' + ${{artist.id}}}" alt="photo" src="" height="100">
             </td>
+            <td>
+                <a th:href="@{'/editartist?artist_id=' + ${artist.id}}" class="btn">Редактировать</a>
+                <a th:href="@{'/deleteartist?artist_id=' + ${artist.id}}" class="btn">Удалить</a>
+            </td>
         </tr>
     </table>
+    <a th:href="@{'/addartist?band_id=' + ${band.id}}" class="btn">Добавить участника</a>
 </div>
-<a th:href="@{/addalbum}" class="btn">Добавить альбом</a>
+
 <br>
 <h3>Альбомы</h3>
 <table>
@@ -44,5 +55,6 @@
         </td>
     </tr>
 </table>
+<a th:href="@{/addalbum}" class="btn">Добавить альбом</a>
 </body>
 </html>
